@@ -21,3 +21,15 @@ export const uploadOnCloudinary = async (localFilePath) => {
     return null;
   }
 };
+
+export const deleteFromCloudinary = async (publicId) => {
+  try {
+    const result = await cloudinary.v2.uploader.destroy(publicId);
+    if (result.result === "ok") {
+     return result.result;
+    }
+    res.status(400).json({ message: "Image Deletion failed from server" });
+  } catch (error) {
+    res.status(500).json({ message: "Image could not be deleted from server" });
+  }
+};
