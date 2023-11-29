@@ -24,12 +24,13 @@ export const uploadOnCloudinary = async (localFilePath) => {
 
 export const deleteFromCloudinary = async (publicId) => {
   try {
-    const result = await cloudinary.v2.uploader.destroy(publicId);
+    const result = await cloudinary.uploader.destroy(publicId);
     if (result.result === "ok") {
-     return result.result;
+      return result.result;
     }
-    res.status(400).json({ message: "Image Deletion failed from server" });
+    throw new Error("Image Deletion failed from server");
   } catch (error) {
-    res.status(500).json({ message: "Image could not be deleted from server" });
+    // res.status(500).json({ message: "Image could not be deleted from server" });
+    throw new Error("Image could not be deleted from server");
   }
 };

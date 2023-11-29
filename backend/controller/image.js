@@ -40,12 +40,14 @@ export const uploadImages = async (req, res) => {
     res.status(500).json({ message: "File upload to server failed" });
   }
 };
+// to fetch all images
 export const getAllImages = async (req, res) => {
   const images = await Image.find();
 
   res.status(200).json({ message: "Images Retrieved", images });
 };
 
+// to delete a image
 export const deleteImage = async (req, res) => {
   try {
     const imageId = req.params.id;
@@ -55,12 +57,20 @@ export const deleteImage = async (req, res) => {
     const publicId = image?.public_id;
     const cloudinaryDeletedResult = await deleteFromCloudinary(publicId);
     console.log(cloudinaryDeletedResult);
-    if (!cloudinaryDeletedResult || cloudinaryDeletedResult != "ok") {
-      res.status(404).json({ message: "Image Couldn't be deleted" });
+
+    if (!cloudinaryDeletedResult || cloudinaryDeletedResult !== "ok") {
+      return res
+        .status(404)
+        .json({ message: "Image couldn't be deleted from Cloudinary" });
     }
-    await Image.deleteOne(imageId).then(() => {
-      res.status(200).json({ message: "Image Deleted from database" });
-    });
+    const databaseresult = await Image.deleteOne({ _id: imageId });
+    console.log(databaseresult);
+    if (!databaseresult) {
+      return res
+        .status(500)
+        .json({ message: "Image coudln't be deleted from database", error });
+    }
+    return res.status(200).json({ message: "Image deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Image coudln't be deleted", error });
   }
