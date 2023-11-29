@@ -1,9 +1,14 @@
-import mongoose from mongoose;
+import mongoose from "mongoose";
 
 const imageSchema  =  new mongoose.Schema ({
-    image:{
+    name:{
         type:String,
-    required:true    }
+    required:true    },
+    url:{
+        type:String,
+        required:true,
+        trim:true
+    }
 })
 
 const Image = mongoose.model("Image",imageSchema)
